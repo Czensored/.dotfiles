@@ -1,0 +1,44 @@
+# Backup files
+*.swp
+*.swo
+*.bak
+*.old
+*~
+
+# System-specific
+.DS_Store
+.Trash/
+.CFUserTextEncoding
+
+# SSH, secrets, and tokens
+.ssh/
+*.pem
+*.key
+*.crt
+*.asc
+.gnupg/
+.git-credentials
+.netrc
+.env
+.envrc
+
+# Local state
+.cache/
+.local/share/nvim/shada/
+zcompdump*
+zsh_sessions/
+
+# Editor-specific
+.vscode/
+.idea/
+*.code-workspace
+
+# Homebrew and Nix
+.brewfile.lock.json
+.nix-channels
+.nix-defexpr
+.nix-profile
+
+# Compiled / bytecode
+*.pyc
+__pycache__/
