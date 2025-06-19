@@ -1,14 +1,6 @@
 # Dotfiles
 
-This is a modular, symlink-based dotfiles setup managed with [GNU Stow](https://www.gnu.org/software/stow/).
-
-It includes configuration for:
-
-- zsh (with Oh My Zsh)
-- neovim (using LazyVim)
-- alacritty (terminal emulator)
-- git (global config)
-- Brewfile (macOS/Linux package manager list)
+This is a modular, symlink-based dotfiles setup on MacOS managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
 ---
 
@@ -39,8 +31,6 @@ cd ~/.dotfiles
 
 ### 2. Install GNU Stow
 
-**macOS:**
-
 ```bash
 brew install stow
 ```
@@ -50,28 +40,10 @@ brew install stow
 Run the following from inside the `.dotfiles` directory:
 
 ```bash
-stow zsh git nvim alacritty
+stow alacritty bin git hammerspoon nvim tmux zsh
 ```
 
 This will automatically create the symlinks for the above dotfiles.
-
----
-
-## Neovim Setup with LazyVim
-
-To install dependencies:
-
-```bash
-brew install neovim ripgrep fd git
-```
-
-Then launch Neovim:
-
-```bash
-nvim
-```
-
-LazyVim will install and configure all plugins automatically.
 
 ---
 
@@ -84,6 +56,18 @@ brew bundle ~/.dotfiles/Brewfile
 ```
 
 This installs CLI tools and GUI apps listed in the file.
+
+---
+
+## Neovim Setup with LazyVim
+
+Launch Neovim:
+
+```bash
+nvim
+```
+
+LazyVim will install and configure all plugins automatically.
 
 ---
 

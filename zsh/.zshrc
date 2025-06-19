@@ -87,6 +87,7 @@ source $ZSH/oh-my-zsh.sh
 # else
 #   export EDITOR='nvim'
 # fi
+export EDITOR='nvim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
@@ -106,3 +107,8 @@ source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 eval "$(zoxide init --cmd cd zsh)"
 source <(fzf --zsh)
+# Auto-start tmux if not already inside
+if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+  tmux new-session -A -s main
+fi
+alias t='tmux new-session -A -s main'

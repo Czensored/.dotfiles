@@ -1,3 +1,4 @@
+hs = hs
 local hyper = {"ctrl", "alt", "shift", "cmd"}
 
 -- Key → App name map
@@ -18,7 +19,7 @@ hs.hotkey.bind({"alt"}, "M", function()
     local win = hs.window.focusedWindow()
     if win then
         local screenFrame = win:screen():frame()
-        win:setFrame(screenFrame)
+        win:setFrameInScreenBounds(screenFrame, 0)
     else
         hs.alert("No focused window")
     end
