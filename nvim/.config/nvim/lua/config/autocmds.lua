@@ -8,7 +8,7 @@
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 -- Auto-save current buffer on various "focus lost" events
 -- Auto-save on FocusLost, BufLeave, or TermOpen
-vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave", "TermOpen" }, {
+vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave", "TermOpen", "VimLeavePre" }, {
   pattern = "*",
   callback = function()
     local buf = vim.api.nvim_get_current_buf()
@@ -16,6 +16,6 @@ vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave", "TermOpen" }, {
       vim.cmd("silent! write")
     end
   end,
-  desc = "Auto-save current buffer on focus loss, buffer switch, or terminal open",
+  desc = "Auto-save current buffer on focus loss, buffer switch, terminal open, or exiting Neovim",
 })
 
