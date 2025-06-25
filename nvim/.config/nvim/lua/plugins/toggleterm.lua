@@ -1,0 +1,11 @@
+return {
+  "akinsho/toggleterm.nvim",
+  opts = {
+    direction = "horizontal",
+    size = 15,
+    open_mapping = [[<C-i>]],
+    start_in_insert = true,
+    insert_mappings = false,
+    terminal_mappings = true,
+  },
+}
