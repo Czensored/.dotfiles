@@ -112,3 +112,4 @@ if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
   tmux new-session -A -s main
 fi
 alias t='tmux new-session -A -s main'
+alias n='nvim .'
