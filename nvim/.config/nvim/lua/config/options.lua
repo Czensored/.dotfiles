@@ -4,4 +4,4 @@
 vim.g.autoformat = false
 vim.g.snacks_animate = false
 
-vim.g.lazyvim_picker = "telescope"
+vim.g.lazyvim_picker = "auto"

@@ -4,14 +4,6 @@
 -- vim.keymap.set("i", "jj", "<Esc>", { desc = "Escape insert mode", noremap = false, silent = true })
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to Definition" })
 
-vim.keymap.set("n", "<leader><leader>", function()
-  require("telescope.builtin").find_files({
-    cwd = vim.fn.getcwd(),
-    hidden = true,
-    no_ignore = false,
-  })
-end, { desc = "Find Files (cwd)" })
-
 local harpoon = require("harpoon")
 
 vim.keymap.set("n", "<leader>a", function()
