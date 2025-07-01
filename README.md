@@ -59,18 +59,6 @@ This installs CLI tools and GUI apps listed in the file.
 
 ---
 
-## Neovim Setup with LazyVim
-
-Launch Neovim:
-
-```bash
-nvim
-```
-
-LazyVim will install and configure all plugins automatically.
-
----
-
 ## Updating Dotfiles
 
 After adding a new config directory (for example, `tmux`), use:

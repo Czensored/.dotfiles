@@ -8,6 +8,7 @@ local appBindings = {
 	O = "Obsidian",
 	S = "Finder",
 	M = "Mail",
+  N = "Messages",
 }
 
 for key, appName in pairs(appBindings) do
@@ -76,65 +77,3 @@ for key, moveFn in pairs(positionBindings) do
 		end
 	end)
 end
-
--- option + tab to display list of open windows
-local windowModal = nil
-local numberedWindows = {}
-local dismissTimer = nil
-
-hs.hotkey.bind({ "alt" }, "tab", function()
-	if windowModal then
-		return
-	end
-
-	numberedWindows = {}
-	local choices = {}
-	local windows = hs.window.orderedWindows()
-
-	for i = 1, math.min(#windows, 9) do
-		local win = windows[i]
-		local app = win:application():name()
-		local title = win:title()
-
-		table.insert(numberedWindows, win)
-		table.insert(choices, string.format("[%d] %s — %s", i, app, title))
-	end
-
-	if #choices == 0 then
-		hs.alert("No windows")
-		return
-	end
-
-	hs.alert.closeAll()
-	-- local alertId = hs.alert(table.concat(choices, "\n"))
-	local alertId = hs.alert(table.concat(choices, "\n"), {}, hs.screen.mainScreen(), 10)
-
-	-- Create modal for 1-9 keys
-	windowModal = hs.hotkey.modal.new()
-	for i = 1, #numberedWindows do
-		windowModal:bind({}, tostring(i), function()
-			hs.alert.closeSpecific(alertId)
-			if dismissTimer then
-				dismissTimer:stop()
-			end
-			local win = numberedWindows[i]
-			if win then
-				win:focus()
-			end
-			windowModal:exit()
-			windowModal = nil
-		end)
-	end
-
-	-- Escape to cancel
-	windowModal:bind({}, "escape", function()
-		hs.alert.closeSpecific(alertId)
-		if dismissTimer then
-			dismissTimer:stop()
-		end
-		windowModal:exit()
-		windowModal = nil
-	end)
-
-	windowModal:enter()
-end)
