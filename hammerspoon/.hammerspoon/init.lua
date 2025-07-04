@@ -9,6 +9,7 @@ local appBindings = {
 	S = "Finder",
 	M = "Mail",
   N = "Messages",
+  B = "Cold Turkey Blocker",
 }
 
 for key, appName in pairs(appBindings) do

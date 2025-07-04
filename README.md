@@ -1,6 +1,6 @@
 # Dotfiles
 
-This is a modular, symlink-based dotfiles setup on MacOS managed with [GNU Stow](https://www.gnu.org/software/stow/).
+Dotfiles managed with GNU Stow on MacOS.
 
 ---
 
@@ -8,19 +8,11 @@ This is a modular, symlink-based dotfiles setup on MacOS managed with [GNU Stow]
 
 ### 0. Prerequisites (macOS)
 
-Install Xcode Command Line Tools:
-
+Install Xcode and Homebrew
 ```bash
 xcode-select --install
-```
-
-Then install Homebrew:
-
-```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
-
-Follow any post-install instructions to add Homebrew to your shell environment.
 
 ### 1. Clone the Repository
 
@@ -43,19 +35,15 @@ Run the following from inside the `.dotfiles` directory:
 stow alacritty bin git hammerspoon nvim tmux zsh
 ```
 
-This will automatically create the symlinks for the above dotfiles.
-
 ---
 
 ## Homebrew Packages
 
-This repository includes a `Brewfile` to install system packages via Homebrew:
+Install Homebrew files from backup:
 
 ```bash
 brew bundle ~/.dotfiles/Brewfile
 ```
-
-This installs CLI tools and GUI apps listed in the file.
 
 ---
 

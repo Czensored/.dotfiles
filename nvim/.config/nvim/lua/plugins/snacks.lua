@@ -31,6 +31,9 @@ return {
     explorer = {},
     picker = {
       hidden = true,
+      matcher = {
+        frecency = true,
+      },
       sources = {
         explorer = {
           auto_close = true,
