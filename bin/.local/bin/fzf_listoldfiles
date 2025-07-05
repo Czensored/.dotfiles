@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# Use fzf to select from recent files and open them in nvim
+# Compatible with Bash 3.2 (e.g. on macOS)
+
+list_oldfiles() {
+  query="$*"
+
+  # Read oldfiles safely even if paths contain spaces
+  oldfiles=()
+  while IFS= read -r line; do
+    oldfiles+=("$line")
+  done < <(nvim -u NONE --headless +'lua io.write(table.concat(vim.v.oldfiles, "\n"))' +qa)
+
+  # Filter valid files
+  valid_files=()
+  for file in "${oldfiles[@]}"; do
+    if [[ -f "$file" ]]; then
+      valid_files+=("$file")
+    fi
+  done
+
+  # Define fzf flags
+  fzf_flags=(
+    --height=70%
+    --layout=reverse
+    --border
+    --preview='bat -n --color=always --line-range=:500 {} || echo "Error previewing file"'
+    --preview-window=right:60%
+  )
+
+  # Add query if provided
+  if [[ -n "$query" ]]; then
+    fzf_flags+=(--query "$query")
+  fi
+
+  # Use fzf to select from valid files
+  files=()
+  while IFS= read -r line; do
+    files+=("$line")
+  done < <(printf "%s\n" "${valid_files[@]}" |
+    grep -v '\[.*' |
+    fzf --multi "${fzf_flags[@]}")
+
+  # Open selected files
+  if [[ ${#files[@]} -gt 0 ]]; then
+    nvim "${files[@]}"
+  fi
+}
+
+list_oldfiles "$@"

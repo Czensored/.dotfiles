@@ -22,3 +22,4 @@ fi
 # Aliases
 alias t='tmux new-session -A -s main'
 alias n='nvim .'
+alias nof="$HOME/.local/bin/fzf_listoldfiles"
