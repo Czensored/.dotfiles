@@ -28,7 +28,7 @@ return {
         "lua",
         "dockerfile",
         "gitignore",
-        -- "javascript",
+        "javascript",
         -- "typescript",
         -- "tsx",
         -- "yaml",

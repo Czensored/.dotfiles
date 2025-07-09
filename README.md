@@ -6,9 +6,8 @@ Dotfiles managed with GNU Stow on MacOS.
 
 ## Installation
 
-### 1. Install MacOS Prerequisites
+### 1. Install MacOS Prerequisites (Xcode and Homebrew)
 
-Install Xcode and Homebrew
 ```bash
 xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -23,7 +22,7 @@ cd ~/.dotfiles
 
 ### 3. Install Homebrew Packages From Backup
 
-Make sure you're in the `.dotfiles` directory for Step 3 and 4:
+Make sure you're in the `.dotfiles` directory for steps 3 and 4:
 
 ```bash
 brew bundle Brewfile
