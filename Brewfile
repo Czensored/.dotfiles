@@ -1,4 +1,6 @@
 tap "jesseduffield/lazygit"
+# Clone of cat(1) with syntax highlighting and Git integration
+brew "bat"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
 # Play, record, convert, and stream audio and video
@@ -31,3 +33,5 @@ brew "zsh-syntax-highlighting"
 brew "jesseduffield/lazygit/lazygit"
 # Desktop automation application
 cask "hammerspoon"
+# Tool to prevent the system from going into sleep mode
+cask "keepingyouawake"
