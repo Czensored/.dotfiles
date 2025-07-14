@@ -91,6 +91,7 @@ return {
         },
         snippets = {
           min_keyword_length = 2,
+          score_offset = 10,
         },
         buffer = {
           min_keyword_length = 4,
