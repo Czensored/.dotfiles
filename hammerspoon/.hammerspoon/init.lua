@@ -8,8 +8,8 @@ local appBindings = {
 	O = "Obsidian",
 	S = "Finder",
 	M = "Mail",
-  N = "Messages",
-  B = "Cold Turkey Blocker",
+	N = "Messages",
+	B = "Cold Turkey Blocker",
 }
 
 for key, appName in pairs(appBindings) do
@@ -78,3 +78,29 @@ for key, moveFn in pairs(positionBindings) do
 		end
 	end)
 end
+
+local lastFocusedWindow = nil
+local currentFocusedWindow = nil
+
+-- Track focus changes
+hs.window.filter.new(nil):subscribe(hs.window.filter.windowFocused, function(win)
+	if win and win:isStandard() and win:isVisible() then
+		if currentFocusedWindow and win:id() ~= currentFocusedWindow:id() then
+			lastFocusedWindow = currentFocusedWindow
+		end
+		currentFocusedWindow = win
+	end
+end)
+
+-- Toggle between last two windows
+hs.hotkey.bind(hyper, "X", function()
+	local current = currentFocusedWindow
+	if not (lastFocusedWindow and lastFocusedWindow:isVisible() and lastFocusedWindow:id() ~= current:id()) then
+		hs.alert("No previous window to toggle to")
+		return
+	end
+
+	local tmp = lastFocusedWindow
+	lastFocusedWindow = current
+	tmp:focus()
+end)
