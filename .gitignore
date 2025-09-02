@@ -42,3 +42,6 @@ zsh_sessions/
 # Compiled / bytecode
 *.pyc
 __pycache__/
+
+# Local bin files
+/bin/.local/

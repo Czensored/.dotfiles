@@ -1,13 +1,13 @@
 # Set Oh My Zsh path and theme
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
-ENABLE_CORRECTION="true"
+# ENABLE_CORRECTION="true"
 
 # Plugins
 plugins=(git)
 source $ZSH/oh-my-zsh.sh
-source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 eval "$(zoxide init --cmd cd zsh)" # Makes cd use zoxide instead of default behavior
 source <(fzf --zsh)
 eval "$(rbenv init -)"

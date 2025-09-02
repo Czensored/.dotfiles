@@ -15,7 +15,7 @@ cd ~/.dotfiles
 brew bundle Brewfile
 
 # Stow the Dotfiles
-stow alacritty bin git hammerspoon nvim tmux zsh
+stow alacritty bin git hammerspoon skhd nvim tmux yabai zsh
 ```
 
 ---

@@ -1,0 +1,5 @@
+# Move the mouse to the newly focused window, keeps input clean
+yabai -m config mouse_follows_focus on
+
+# Avoid mouse hover stealing focus
+yabai -m config focus_follows_mouse off

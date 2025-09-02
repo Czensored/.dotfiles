@@ -8,6 +8,7 @@ local appBindings = {
 	O = "Obsidian",
 	S = "Finder",
 	N = "Messages",
+  R = "Calendar",
 }
 
 for key, appName in pairs(appBindings) do
