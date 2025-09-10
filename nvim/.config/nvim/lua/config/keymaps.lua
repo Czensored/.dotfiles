@@ -4,6 +4,25 @@
 -- vim.keymap.set("i", "jj", "<Esc>", { desc = "Escape insert mode", noremap = false, silent = true })
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to Definition" })
 
+vim.keymap.set("n", "cx", ":!chmod +x %<cr>", { desc = "make file excecutable" })
+
+-- Map Option+Delete in insert mode to delete previous word
+vim.keymap.set("i", "<A-BS>", "<C-w>", { desc = "Delete previous word" })
+
+-- Copy absolute path
+vim.keymap.set("n", "<leader>cpf", function()
+  local path = vim.fn.expand("%:p")
+  vim.fn.setreg("+", path)
+  vim.notify("Copied absolute path:\n" .. path, vim.log.levels.INFO)
+end, { desc = "Copy full (absolute) file path" })
+
+-- Copy relative path (to current working directory)
+vim.keymap.set("n", "<leader>cpr", function()
+  local path = vim.fn.expand("%:.")
+  vim.fn.setreg("+", path)
+  vim.notify("Copied relative path:\n" .. path, vim.log.levels.INFO)
+end, { desc = "Copy relative file path" })
+
 local harpoon = require("harpoon")
 
 vim.keymap.set("n", "<leader>ha", function()
