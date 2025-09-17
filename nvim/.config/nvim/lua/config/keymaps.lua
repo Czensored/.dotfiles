@@ -52,7 +52,7 @@ end, { desc = "Clear all Harpoon entries" })
 vim.keymap.set({ "n", "i" }, "<C-j>", function()
   local back = (vim.fn.mode() == "i")
   if vim.fn.spellbadword()[1] == "" then
-    vim.cmd.normal({ "]s", bang = true }) -- jump to next misspelling
+    vim.cmd.normal({ "[s", bang = true })
   end
   if vim.fn.spellbadword()[1] ~= "" then
     vim.cmd.normal({ "1z=", bang = true }) -- accept first suggestion
@@ -62,4 +62,4 @@ vim.keymap.set({ "n", "i" }, "<C-j>", function()
   if back then
     vim.cmd.startinsert()
   end
-end, { desc = "Fix current misspelling or jump to next and fix", silent = true })
+end, { desc = "Fix current misspelling or jump to previous and fix", silent = true })

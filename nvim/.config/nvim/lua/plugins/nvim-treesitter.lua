@@ -17,6 +17,7 @@ return {
       indent = { enable = true },
       -- ensure these language parsers are installed
       ensure_installed = {
+        "latex",
         "rust",
         "cpp",
         "python",
