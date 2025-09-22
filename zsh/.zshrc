@@ -24,6 +24,7 @@ fi
 alias t='tmux new-session -A -s main'
 alias n='nvim .'
 alias nof="$HOME/.local/bin/fzf_listoldfiles"
+alias vim='nvim'
 
 # Load local .zshrc if present
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
