@@ -18,8 +18,6 @@ brew "lazygit"
 brew "neovim"
 # Platform built on V8 to build network applications
 brew "node"
-# Ruby version manager
-brew "rbenv"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Organize software neatly under a single directory tree (e.g. /usr/local)

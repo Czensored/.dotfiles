@@ -3,9 +3,9 @@ return {
   build = ":TSUpdate",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
-  opts = function(_, opts)
-    -- Parsers
-    opts.ensure_installed = {
+  main = "nvim-treesitter.configs",
+  opts = {
+    ensure_installed = {
       "lua",
       "vim",
       "vimdoc",
@@ -24,6 +24,7 @@ return {
       "bash",
       "gitignore",
       "javascript",
+      -- "sql",
       -- "dockerfile",
       -- "typescript",
       -- "tsx",
@@ -31,9 +32,9 @@ return {
       -- "html",
       -- "css",
       -- "query",
-    }
+    },
 
-    opts.textobjects = {
+    textobjects = {
       select = {
         enable = true,
         -- Automatically jump forward to textobj, similar to targets.vim
@@ -118,6 +119,6 @@ return {
         enable = true,
         peek_definition_code = { ["<leader>df"] = "@function.outer", ["<leader>dF"] = "@class.outer" },
       },
-    }
-  end,
+    },
+  },
 }
