@@ -44,4 +44,5 @@ zsh_sessions/
 __pycache__/
 
 # Local bin files
-/bin/.local/
+/bin/.local/share
+/bin/.local/state

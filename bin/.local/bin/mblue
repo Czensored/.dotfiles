@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Mount the remote path to the CURRENT DIRECTORY using sshfs.
+# If you're inside ~/sshfs/blue/<subpath>, it maps 1:1 to /home/student/isalzman/<subpath>.
+# Otherwise it defaults to /home/student/isalzman/<basename($PWD)>.
+
+set -euo pipefail
+
+REMOTE="blue"
+REMOTE_HOME="/home/student/isalzman"
+BASE_LOCAL="${HOME}/sshfs/blue"
+
+MP="$(pwd)"                             # local mountpoint (must exist)
+VOL="blue-$(basename "$MP")"
+OPTS="-o volname=${VOL} -o reconnect,follow_symlinks,defer_permissions -o uid=$(id -u),gid=$(id -g) -o ServerAliveInterval=15,ServerAliveCountMax=3"
+
+# Decide remote path:
+if [[ "$MP" == "$BASE_LOCAL"* ]]; then
+  rel="${MP#${BASE_LOCAL}/}"            # relative path under ~/sshfs/blue
+  [[ -z "$rel" ]] && { echo "Refusing to mount at ${BASE_LOCAL} root. cd into a subdir."; exit 1; }
+  REMOTE_PATH="${REMOTE_HOME}/${rel}"
+else
+  REMOTE_PATH="${REMOTE_HOME}/$(basename "$MP")"
+fi
+
+# Sanity checks
+if mount | grep -q " on ${MP} "; then
+  echo "Already mounted on: ${MP}"
+  exit 0
+fi
+
+# Directory must be empty to mount cleanly
+if [[ -n "$(ls -A "$MP" 2>/dev/null)" ]]; then
+  echo "Directory not empty: ${MP}"
+  echo "cd to an empty mountpoint (e.g., under ~/sshfs/blue) or use a dedicated subfolder."
+  exit 1
+fi
+
+# Ensure remote dir exists
+ssh "$REMOTE" "mkdir -p '$REMOTE_PATH'"
+
+# Mount
+sshfs "${REMOTE}:${REMOTE_PATH}" "$MP" $OPTS
+echo "Mounted ${REMOTE}:${REMOTE_PATH} -> ${MP}"

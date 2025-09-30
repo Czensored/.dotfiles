@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+yabai --install-service >/dev/null 2>&1 || true
+skhd  --install-service >/dev/null 2>&1 || true
+yabai --start-service || yabai --restart-service
+skhd  --start-service  || skhd  --restart-service
+sudo yabai --load-sa
+echo "yabai & skhd ready."
+
+# yabai --start-service
+# skhd --start-service
+# sudo yabai --load-sa
