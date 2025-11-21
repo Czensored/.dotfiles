@@ -9,14 +9,17 @@ REMOTE="blue"
 REMOTE_HOME="/home/student/isalzman"
 BASE_LOCAL="${HOME}/sshfs/blue"
 
-MP="$(pwd)"                             # local mountpoint (must exist)
+MP="$(pwd)" # local mountpoint (must exist)
 VOL="blue-$(basename "$MP")"
 OPTS="-o volname=${VOL} -o reconnect,follow_symlinks,defer_permissions -o uid=$(id -u),gid=$(id -g) -o ServerAliveInterval=15,ServerAliveCountMax=3"
 
 # Decide remote path:
 if [[ "$MP" == "$BASE_LOCAL"* ]]; then
-  rel="${MP#${BASE_LOCAL}/}"            # relative path under ~/sshfs/blue
-  [[ -z "$rel" ]] && { echo "Refusing to mount at ${BASE_LOCAL} root. cd into a subdir."; exit 1; }
+  rel="${MP#${BASE_LOCAL}/}" # relative path under ~/sshfs/blue
+  [[ -z "$rel" ]] && {
+    echo "Refusing to mount at ${BASE_LOCAL} root. cd into a subdir."
+    exit 1
+  }
   REMOTE_PATH="${REMOTE_HOME}/${rel}"
 else
   REMOTE_PATH="${REMOTE_HOME}/$(basename "$MP")"

@@ -50,7 +50,6 @@ vim.keymap.set("n", "<leader>hc", function()
 end, { desc = "Clear all Harpoon entries" })
 
 vim.keymap.set({ "n", "i" }, "<C-j>", function()
-  local back = (vim.fn.mode() == "i")
   if vim.fn.spellbadword()[1] == "" then
     vim.cmd.normal({ "[s", bang = true })
   end
@@ -59,7 +58,15 @@ vim.keymap.set({ "n", "i" }, "<C-j>", function()
   elseif vim.notify then
     vim.notify("No misspellings found", vim.log.levels.INFO)
   end
-  if back then
-    vim.cmd.startinsert()
-  end
+  vim.cmd.stopinsert()
 end, { desc = "Fix current misspelling or jump to previous and fix", silent = true })
+
+-- Notify word count
+vim.keymap.set({ "n", "v" }, "<leader>wc", function()
+  local wc = vim.fn.wordcount()
+  local words = wc.visual_words or wc.words or 0
+  local scope = wc.visual_words and " (selection)" or ""
+  local msg = string.format("Word count%s: %d", scope, words)
+
+  vim.notify(msg, vim.log.levels.INFO, { title = "Word Count" })
+end, { desc = "Show word count", silent = true })

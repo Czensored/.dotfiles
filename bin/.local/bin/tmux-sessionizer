@@ -8,6 +8,7 @@ SEARCH_DIRS=(
   "/Users/isalzman/Desktop/Coding Projects/Practice/advent-of-code"
   "/Users/isalzman/sshfs"
   "/Users/isalzman/sshfs/blue"
+  "/Users/isalzman/Desktop/SSU"
 )
 
 if [[ $# -eq 1 ]]; then

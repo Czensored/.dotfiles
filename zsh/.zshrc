@@ -10,7 +10,7 @@ source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 eval "$(zoxide init --cmd cd zsh)" # Makes cd use zoxide instead of default behavior
 source <(fzf --zsh)
-eval "$(rbenv init -)"
+# eval "$(rbenv init -)"
 
 # Editor
 export EDITOR='nvim'
