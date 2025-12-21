@@ -2,7 +2,6 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 -- vim.keymap.set("i", "jj", "<Esc>", { desc = "Escape insert mode", noremap = false, silent = true })
-vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to Definition" })
 
 vim.keymap.set("n", "cx", ":!chmod +x %<cr>", { desc = "make file excecutable" })
 
@@ -10,14 +9,14 @@ vim.keymap.set("n", "cx", ":!chmod +x %<cr>", { desc = "make file excecutable" }
 vim.keymap.set("i", "<A-BS>", "<C-w>", { desc = "Delete previous word" })
 
 -- Copy absolute path
-vim.keymap.set("n", "<leader>cpf", function()
+vim.keymap.set("n", "<leader>cP", function()
   local path = vim.fn.expand("%:p")
   vim.fn.setreg("+", path)
   vim.notify("Copied absolute path:\n" .. path, vim.log.levels.INFO)
 end, { desc = "Copy full (absolute) file path" })
 
 -- Copy relative path (to current working directory)
-vim.keymap.set("n", "<leader>cpr", function()
+vim.keymap.set("n", "<leader>cp", function()
   local path = vim.fn.expand("%:.")
   vim.fn.setreg("+", path)
   vim.notify("Copied relative path:\n" .. path, vim.log.levels.INFO)

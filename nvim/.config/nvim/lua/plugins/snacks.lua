@@ -15,16 +15,12 @@ return {
     {
       "<leader><space>",
       function()
-        Snacks.picker.files({
-          finder = "files",
-          format = "file",
+        Snacks.picker.buffers({
           show_empty = true,
-          supports_live = true,
-          hidden = true,
-          ignored = false,
+          sort_lastused = true,
         })
       end,
-      desc = "Find Files",
+      desc = "Buffers",
     },
   },
   opts = {
