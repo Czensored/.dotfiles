@@ -37,12 +37,14 @@ vim.api.nvim_create_autocmd("FileType", {
       local infile   = vim.fn.expand("%:p")
       local basename = vim.fn.expand("%:t:r")
       local outfile  = vim.fn.expand("~/Downloads/") .. basename .. ".pdf"
+      local infile_dir = vim.fn.fnamemodify(infile, ":h")
 
       local args = {
         infile,
         "-o", outfile,
         "--from=markdown+autolink_bare_uris",
         "--pdf-engine=xelatex",
+        "--resource-path=" .. infile_dir,
       }
 
       if opts.bang then
@@ -96,6 +98,14 @@ vim.api.nvim_create_autocmd("FileType", {
       nargs = "*",
       bang = true,
       desc = "Export Markdown to PDF (Downloads)",
+    })
+
+    vim.keymap.set("n", "<leader>md", function()
+      vim.cmd("MdToPdf")
+    end, {
+      buffer = event.buf,
+      desc = "Export Markdown to PDF (Downloads)",
+      silent = true,
     })
   end,
 })
