@@ -1,23 +1,28 @@
+tap "gromgit/fuse"
 tap "jesseduffield/lazygit"
 tap "koekeishiya/formulae"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
-# Play, record, convert, and stream audio and video
+# Play, record, convert, and stream select audio and video codecs
 brew "ffmpeg"
 # Command-line fuzzy finder written in Go
 brew "fzf"
 # Command-line downloader for image-hosting site galleries and collections
 brew "gallery-dl"
+# GNU compiler collection
+brew "gcc"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Simple terminal UI for git commands
 brew "lazygit"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# Platform built on V8 to build network applications
+# Open-source, cross-platform JavaScript runtime environment
 brew "node"
+# Swiss-army knife of markup format conversion
+brew "pandoc"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
@@ -26,6 +31,8 @@ brew "stow"
 brew "tmux"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
+# Incremental parsing library
+brew "tree-sitter"
 # Feature-rich command-line audio/video downloader
 brew "yt-dlp"
 # Shell extension to navigate your filesystem faster
@@ -34,6 +41,8 @@ brew "zoxide"
 brew "zsh-autosuggestions"
 # Fish shell like syntax highlighting for zsh
 brew "zsh-syntax-highlighting"
+# File system client based on SSH File Transfer Protocol
+brew "gromgit/fuse/sshfs-mac"
 # Simple hotkey-daemon for macOS.
 brew "koekeishiya/formulae/skhd"
 # A tiling window manager for macOS based on binary space partitioning.
@@ -42,6 +51,8 @@ brew "koekeishiya/formulae/yabai"
 cask "alacritty"
 # Application launcher and productivity software
 cask "alfred"
+# Compact TeX distribution as alternative to the full TeX Live / MacTeX
+cask "basictex"
 # Desktop automation application
 cask "hammerspoon"
 # Keyboard customiser
@@ -50,5 +61,8 @@ cask "karabiner-elements"
 cask "keepingyouawake"
 # Clipboard manager
 cask "maccy"
-# Knowledge base that works on top of a local folder of plain text Markdown files
-cask "obsidian"
+# File system integration
+cask "macfuse"
+cargo "aoc-cli"
+cargo "tree-sitter-cli"
+cargo "wasm-pack"

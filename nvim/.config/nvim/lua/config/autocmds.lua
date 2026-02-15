@@ -34,9 +34,9 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.cmd.write()
       end
 
-      local infile   = vim.fn.expand("%:p")
-      local basename = vim.fn.expand("%:t:r")
-      local outfile  = vim.fn.expand("~/Downloads/") .. basename .. ".pdf"
+      local infile     = vim.fn.expand("%:p")
+      local basename   = vim.fn.expand("%:t:r")
+      local outfile    = vim.fn.expand("~/Downloads/") .. basename .. ".pdf"
       local infile_dir = vim.fn.fnamemodify(infile, ":h")
 
       local args = {

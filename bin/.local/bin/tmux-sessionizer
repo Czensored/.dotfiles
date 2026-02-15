@@ -10,6 +10,9 @@ SEARCH_DIRS=(
   "/Users/isalzman/sshfs/"
   "/Users/isalzman/sshfs/blue/"
   "/Users/isalzman/Desktop/SSU/"
+  "/Users/isalzman/Desktop/SSU/CS 450/"
+  "/Users/isalzman/Desktop/SSU/CS 454/"
+  "/Users/isalzman/Desktop/SSU/CS 460/"
 )
 
 if [[ $# -eq 1 ]]; then
