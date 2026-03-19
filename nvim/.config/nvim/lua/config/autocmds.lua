@@ -109,17 +109,3 @@ vim.api.nvim_create_autocmd("FileType", {
     })
   end,
 })
-
--- vim.api.nvim_create_autocmd("FileType", {
---   pattern = "markdown",
---   callback = function()
---     vim.opt_local.textwidth = 80
---   end,
--- })
---
--- vim.api.nvim_create_autocmd("BufWinLeave", {
---   pattern = "markdown",
---   callback = function()
---     vim.opt_local.textwidth = 0
---   end,
--- })

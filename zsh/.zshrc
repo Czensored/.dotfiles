@@ -25,5 +25,6 @@ alias t='tmux new-session -A -s main'
 alias n='nvim .'
 alias nof="fzf_listoldfiles"
 alias vim='nvim'
+alias dlp='yt-dlp -f "bv*+ba/b" --merge-output-format mp4 --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview"'2
 
 export PATH="$HOME/.local/bin:$PATH"
