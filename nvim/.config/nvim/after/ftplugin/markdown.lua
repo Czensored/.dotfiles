@@ -1,6 +1,7 @@
 vim.opt_local.textwidth = 80
 vim.opt_local.formatexpr = ""
-vim.opt_local.formatoptions:append("a")
+vim.opt_local.formatoptions:remove("a")
+vim.opt_local.formatoptions:append("t")
 
 vim.keymap.set("n", "<leader>uw", function()
   if vim.opt_local.textwidth:get() == 80 then

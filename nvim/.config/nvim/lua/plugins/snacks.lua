@@ -20,7 +20,7 @@ return {
           format = "file",
           show_empty = true,
           supports_live = true,
-          -- hidden = true,
+          hidden = true,
           ignored = false,
           sort_lastused = true,
         })
