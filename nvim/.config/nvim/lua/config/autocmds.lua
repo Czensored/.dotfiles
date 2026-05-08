@@ -109,3 +109,26 @@ vim.api.nvim_create_autocmd("FileType", {
     })
   end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function(args)
+    vim.keymap.set("n", "<leader>ml", function()
+      local max = 0
+      local line_num = 0
+
+      for i = 1, vim.api.nvim_buf_line_count(0) do
+        local len = vim.fn.strlen(vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1])
+        if len > max then
+          max = len
+          line_num = i
+        end
+      end
+
+      vim.notify("line " .. line_num .. " has " .. max .. " chars")
+    end, {
+      buffer = args.buf,
+      desc = "Find longest line in Markdown file",
+    })
+  end,
+})
