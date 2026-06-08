@@ -19,7 +19,7 @@ vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave", "TermOpen", "VimLeavePre"
   desc = "Auto-save current buffer on focus loss, buffer switch, terminal open, or exiting Neovim",
 })
 
---   :MdToPdf           -> title = file name
+--   :MdToPdf           -> title = frontmatter title, or file name if no frontmatter title
 --   :MdToPdf!          -> no title
 --   :MdToPdf My Report -> title = "My Report"
 vim.api.nvim_create_autocmd("FileType", {
@@ -30,6 +30,7 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.notify("pandoc not found in PATH", vim.log.levels.ERROR)
         return
       end
+
       if vim.bo.modified then
         vim.cmd.write()
       end
@@ -39,21 +40,64 @@ vim.api.nvim_create_autocmd("FileType", {
       local outfile    = vim.fn.expand("~/Downloads/") .. basename .. ".pdf"
       local infile_dir = vim.fn.fnamemodify(infile, ":h")
 
+      local function clean_line(line)
+        line = line or ""
+        -- Remove UTF-8 BOM if present, then trim whitespace.
+        line = line:gsub("^\239\187\191", "")
+        return vim.trim(line)
+      end
+
+      local function markdown_has_frontmatter_title(path)
+        local ok, lines = pcall(vim.fn.readfile, path, "", 120)
+        if not ok or not lines or #lines == 0 then
+          return false
+        end
+
+        -- YAML frontmatter must start at the top of the file.
+        if clean_line(lines[1]) ~= "---" then
+          return false
+        end
+
+        for i = 2, #lines do
+          local line = clean_line(lines[i])
+
+          -- End of YAML frontmatter.
+          if line == "---" or line == "..." then
+            return false
+          end
+
+          -- Match:
+          -- title: Something
+          -- title:
+          --   Something
+          if line:match("^title%s*:") then
+            return true
+          end
+        end
+
+        return false
+      end
+
       local args = {
         infile,
         "-o", outfile,
-        "--from=markdown+autolink_bare_uris",
+        "--from=markdown+yaml_metadata_block+autolink_bare_uris",
         "--pdf-engine=xelatex",
         "--resource-path=" .. infile_dir,
       }
 
       if opts.bang then
+        -- :MdToPdf! -> force no title
         table.insert(args, "--variable")
         table.insert(args, "title=")
       elseif opts.args and #opts.args > 0 then
+        -- :MdToPdf My Report -> explicit command title wins
         table.insert(args, "--metadata")
         table.insert(args, "title=" .. opts.args)
+      elseif markdown_has_frontmatter_title(infile) then
+        -- :MdToPdf with frontmatter title -> let Pandoc use it
       else
+        -- :MdToPdf with no frontmatter title -> use filename
         table.insert(args, "--metadata")
         table.insert(args, "title=" .. basename)
       end
@@ -61,6 +105,7 @@ vim.api.nvim_create_autocmd("FileType", {
       local function run_with(engine, is_fallback)
         local full = { "pandoc" }
         vim.list_extend(full, args)
+
         for i, v in ipairs(full) do
           if v:match("^%-%-pdf%-engine=") then
             full[i] = "--pdf-engine=" .. engine
@@ -70,7 +115,8 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.system(full, { text = true }, function(obj)
           vim.schedule(function()
             if obj.code == 0 then
-              local msg = "Exported → " .. outfile
+              local msg = "Exported -> " .. outfile
+
               if is_fallback then
                 msg = msg .. " (via fallback engine: " .. engine .. ")"
                 vim.notify(msg, vim.log.levels.WARN, { title = "MdToPdf" })
@@ -80,13 +126,17 @@ vim.api.nvim_create_autocmd("FileType", {
             else
               if engine == "xelatex" and vim.fn.executable("wkhtmltopdf") == 1 then
                 vim.notify(
-                  "xelatex failed, retrying with wkhtmltopdf…",
+                  "xelatex failed, retrying with wkhtmltopdf...",
                   vim.log.levels.WARN,
                   { title = "MdToPdf" }
                 )
                 run_with("wkhtmltopdf", true)
               else
-                vim.notify("Pandoc failed:\n" .. (obj.stderr or obj.stdout or ""), vim.log.levels.ERROR, { title = "MdToPdf" })
+                vim.notify(
+                  "Pandoc failed:\n" .. (obj.stderr or obj.stdout or ""),
+                  vim.log.levels.ERROR,
+                  { title = "MdToPdf" }
+                )
               end
             end
           end)

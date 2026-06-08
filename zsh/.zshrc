@@ -26,5 +26,10 @@ alias n='nvim .'
 alias nof="fzf_listoldfiles"
 alias vim='nvim'
 alias dlp='yt-dlp -f "bv*+ba/b" --merge-output-format mp4 --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview"'
+alias codex='tmux set-option -p @codex_pane 1 \; select-pane -T codex; command codex'
 
 export PATH="$HOME/.local/bin:$PATH"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

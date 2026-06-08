@@ -9,3 +9,4 @@ vim.g.lazyvim_picker = "auto"
 
 vim.opt.wrap = true
 vim.opt.linebreak = true
+vim.opt.showtabline = 0
