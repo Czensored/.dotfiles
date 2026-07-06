@@ -1,0 +1,7 @@
+interface:
+  display_name: "Personal Site Favicons"
+  short_description: "Use root favicon paths for the personal site"
+  default_prompt: "Use $personal-site-favicons to update my personal site favicon references."
+
+policy:
+  allow_implicit_invocation: false

@@ -15,7 +15,7 @@ cd ~/.dotfiles
 brew bundle Brewfile
 
 # Stow the Dotfiles
-stow alacritty bin git hammerspoon nvim skhd tmux yabai zsh
+stow alacritty bin codex git hammerspoon nvim skhd tmux yabai zsh
 ```
 
 ---
@@ -31,5 +31,5 @@ stow tmux
 To remove symlinks:
 
 ```bash
-stow -D zsh git nvim alacritty
+stow -D zsh git nvim alacritty codex
 ```
