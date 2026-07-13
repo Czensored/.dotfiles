@@ -8,14 +8,15 @@ xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Clone the repo
+mkdir -p ~/.dotfiles
 git clone https://github.com/Czensored/.dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 
 # Install Homebrew Packages From Backup
-brew bundle Brewfile
+brew bundle --file=Brewfile
 
 # Stow the Dotfiles
-stow alacritty bin codex git hammerspoon nvim skhd tmux yabai zsh
+stow alacritty bin codex git hammerspoon nvim tmux zsh
 ```
 
 ---
