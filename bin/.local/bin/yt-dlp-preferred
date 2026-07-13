@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+yt-dlp \
+  -f "bv*+ba/b" \
+  --merge-output-format mp4 \
+  --sponsorblock-remove "sponsor,selfpromo,interaction,intro,outro,preview" \
+  "$@"

@@ -1,0 +1,249 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOWNLOAD_DIR="/Users/isalzman/Desktop/YouTube"
+SESSION_PREFIX="ytdlp"
+JOB_COUNT=0
+STARTED_SESSIONS=()
+CLEANED_UP=0
+OWNER_ID="yt-dlp-watch-$$"
+
+mkdir -p "$DOWNLOAD_DIR"
+
+require_command() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    printf 'Missing required command: %s\n' "$1" >&2
+    exit 1
+  fi
+}
+
+inspect_command() {
+  local session="$1"
+
+  if [[ -n "${TMUX:-}" ]]; then
+    printf 'tmux switch-client -t %q' "$session"
+  else
+    printf 'tmux attach -t %q' "$session"
+  fi
+}
+
+print_prompt() {
+  :
+}
+
+failure_reason() {
+  local session="$1"
+  local exit_status="$2"
+  local reason
+
+  reason="$(
+    tmux capture-pane -Jpt "$session" -S -2000 2>/dev/null |
+      awk '/ERROR:/ { line=$0 } END { print line }'
+  )"
+
+  if [[ -n "$reason" ]]; then
+    printf '%s' "$reason"
+  elif [[ -n "$exit_status" ]]; then
+    printf 'exit %s' "$exit_status"
+  else
+    printf 'unknown error'
+  fi
+}
+
+monitor_sessions() {
+  local session owner status notified url exit_status reason failure_id
+  local running=0 had_running=0 empty_notified=1 failure_count=0
+
+  while true; do
+    sleep 1
+    running=0
+
+    while IFS= read -r session; do
+      owner="$(tmux show-options -qv -t "$session" @ytdlp_owner 2>/dev/null || true)"
+      [[ "$owner" == "$OWNER_ID" ]] || continue
+
+      status="$(tmux show-options -qv -t "$session" @ytdlp_status 2>/dev/null || true)"
+      notified="$(tmux show-options -qv -t "$session" @ytdlp_notified 2>/dev/null || true)"
+
+      if [[ "$status" == "running" ]]; then
+        running=$((running + 1))
+        had_running=1
+        empty_notified=0
+        continue
+      fi
+
+      if [[ "$status" == "failed" && "$notified" != "1" ]]; then
+        had_running=1
+        empty_notified=0
+        url="$(tmux show-options -qv -t "$session" @ytdlp_url 2>/dev/null || true)"
+        exit_status="$(tmux show-options -qv -t "$session" @ytdlp_exit_status 2>/dev/null || true)"
+        reason="$(failure_reason "$session" "$exit_status")"
+        failure_id="$(tmux show-options -qv -t "$session" @ytdlp_failure_id 2>/dev/null || true)"
+
+        if [[ -z "$failure_id" ]]; then
+          failure_count=$((failure_count + 1))
+          failure_id="$failure_count"
+          tmux set-option -q -t "$session" @ytdlp_failure_id "$failure_id" 2>/dev/null || true
+        fi
+
+        printf '\nFailed [%s]\n' "$failure_id"
+        printf '%s\n' "$reason"
+        printf 'Retry: r %s\n\n' "$failure_id"
+        print_prompt
+
+        tmux set-option -q -t "$session" @ytdlp_notified 1 2>/dev/null || true
+      fi
+    done < <(tmux list-sessions -F '#S' 2>/dev/null || true)
+
+    if [[ $running -eq 0 && $had_running -eq 1 && $empty_notified -eq 0 ]]; then
+      printf 'No downloads running\n\n'
+      print_prompt
+      empty_notified=1
+    fi
+  done
+}
+
+stop_monitor() {
+  if [[ -n "${MONITOR_PID:-}" ]]; then
+    kill "$MONITOR_PID" 2>/dev/null || true
+    wait "$MONITOR_PID" 2>/dev/null || true
+  fi
+}
+
+cleanup_sessions() {
+  local session killed=0
+
+  if [[ ${#STARTED_SESSIONS[@]} -eq 0 ]]; then
+    return
+  fi
+
+  for session in "${STARTED_SESSIONS[@]}"; do
+    if tmux has-session -t "$session" 2>/dev/null; then
+      tmux kill-session -t "$session" 2>/dev/null || true
+      killed=$((killed + 1))
+    fi
+  done
+
+  if [[ $killed -gt 0 ]]; then
+    printf 'Closed %s active download tmux session(s).\n' "$killed"
+  fi
+}
+
+retry_failed() {
+  local failure_id="$1"
+  local session owner option_failure_id url
+
+  while IFS= read -r session; do
+    owner="$(tmux show-options -qv -t "$session" @ytdlp_owner 2>/dev/null || true)"
+    [[ "$owner" == "$OWNER_ID" ]] || continue
+
+    option_failure_id="$(tmux show-options -qv -t "$session" @ytdlp_failure_id 2>/dev/null || true)"
+    [[ "$option_failure_id" == "$failure_id" ]] || continue
+
+    url="$(tmux show-options -qv -t "$session" @ytdlp_url 2>/dev/null || true)"
+    if [[ -z "$url" ]]; then
+      printf 'Cannot retry [%s]: missing URL\n' "$failure_id"
+      return 1
+    fi
+
+    start_download "$url"
+    return 0
+  done < <(tmux list-sessions -F '#S' 2>/dev/null || true)
+
+  printf 'No failed download [%s]\n' "$failure_id"
+  return 1
+}
+
+shutdown() {
+  if [[ $CLEANED_UP -eq 1 ]]; then
+    return
+  fi
+
+  CLEANED_UP=1
+  stop_monitor
+  cleanup_sessions
+  printf '\nStopped\n'
+}
+
+start_download() {
+  local url="$1"
+  local stamp session wait_name job q_job q_url q_session q_download_dir q_preferred_cmd q_wait_name
+
+  JOB_COUNT=$((JOB_COUNT + 1))
+  stamp="$(date '+%Y%m%d-%H%M%S')"
+  session="${SESSION_PREFIX}-${stamp}-$$-${JOB_COUNT}"
+  wait_name="${session}-start"
+
+  job='
+url="$1"
+session="$2"
+download_dir="$3"
+preferred_cmd="$4"
+wait_name="$5"
+
+tmux wait-for "$wait_name"
+set +e
+printf "URL: %s\nSession: %s\n\n" "$url" "$session"
+"$preferred_cmd" "$url"
+status=$?
+
+if [[ $status -eq 0 ]]; then
+  printf "\nDownload finished successfully. Closing tmux session.\n"
+  tmux kill-session -t "$session"
+else
+  tmux set-option -q -t "$session" @ytdlp_status failed
+  tmux set-option -q -t "$session" @ytdlp_exit_status "$status"
+  tmux set-option -q -t "$session" @ytdlp_url "$url"
+  tmux set-option -q -t "$session" @ytdlp_notified 0
+  exec bash
+fi
+'
+
+  printf -v q_job '%q' "$job"
+  printf -v q_url '%q' "$url"
+  printf -v q_session '%q' "$session"
+  printf -v q_download_dir '%q' "$DOWNLOAD_DIR"
+  printf -v q_preferred_cmd '%q' "$PREFERRED_CMD"
+  printf -v q_wait_name '%q' "$wait_name"
+
+  tmux new-session -d -s "$session" -c "$DOWNLOAD_DIR" \
+    "bash -c $q_job bash $q_url $q_session $q_download_dir $q_preferred_cmd $q_wait_name"
+  STARTED_SESSIONS+=("$session")
+  tmux set-option -q -t "$session" @ytdlp_status running
+  tmux set-option -q -t "$session" @ytdlp_url "$url"
+  tmux set-option -q -t "$session" @ytdlp_notified 0
+  tmux set-option -q -t "$session" @ytdlp_owner "$OWNER_ID"
+  tmux wait-for -S "$wait_name"
+
+  inspect_command "$session"
+  printf '\n\n'
+}
+
+require_command tmux
+require_command yt-dlp-preferred
+
+PREFERRED_CMD="$(command -v yt-dlp-preferred)"
+
+monitor_sessions &
+MONITOR_PID=$!
+trap 'shutdown; exit 0' INT TERM
+trap 'shutdown' EXIT
+
+while true; do
+  print_prompt
+  if ! IFS= read -r url; then
+    exit 0
+  fi
+
+  [[ -z "${url//[[:space:]]/}" ]] && continue
+  if [[ "$url" =~ ^r[[:space:]]+([0-9]+)$ ]]; then
+    retry_failed "${BASH_REMATCH[1]}" || true
+    continue
+  fi
+  if [[ "$url" =~ ^retry[[:space:]]+([0-9]+)$ ]]; then
+    retry_failed "${BASH_REMATCH[1]}" || true
+    continue
+  fi
+
+  start_download "$url"
+done
