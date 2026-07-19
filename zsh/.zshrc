@@ -27,6 +27,7 @@ alias nof="fzf_listoldfiles"
 alias vim='nvim'
 alias dlp='yt-dlp-preferred'
 alias codex='tmux set-option -p @codex_pane 1 \; select-pane -T codex; command codex'
+alias claude='tmux set-option -p @claude_pane 1 \; select-pane -T claude; command claude'
 
 export PATH="$HOME/.local/bin:$PATH"
 
