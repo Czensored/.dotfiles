@@ -1,6 +1,9 @@
 return {
   "folke/snacks.nvim",
   keys = {
+    -- Use Diffview for full branch reviews instead of the Snacks diff picker
+    { "<leader>gD", false },
+
     -- Open LazyGit
     {
       "<leader>gg",
