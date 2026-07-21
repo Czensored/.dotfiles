@@ -53,10 +53,15 @@ return {
         height = 0,
       },
 
-      -- Make pressing `e` in LazyGit open files in the current Neovim instance
+      -- Make pressing `e` in LazyGit open files in the existing editor window
       config = {
         os = {
           editPreset = "nvim-remote",
+          -- HACK: This overrides an experimental LazyGit preset and depends on current
+          -- Snacks/LazyGit terminal behavior. It may break after a plugin update, but works for now.
+          edit = [=[[ -z "$NVIM" ] && (nvim -- {{filename}}) || (nvim --server "$NVIM" --remote-send "q" && nvim --server "$NVIM" --remote {{filename}})]=],
+          editAtLine = [=[[ -z "$NVIM" ] && (nvim +{{line}} -- {{filename}}) || (nvim --server "$NVIM" --remote-send "q" && nvim --server "$NVIM" --remote {{filename}} && nvim --server "$NVIM" --remote-send ":{{line}}<CR>")]=],
+          openDirInEditor = [=[[ -z "$NVIM" ] && (nvim -- {{dir}}) || (nvim --server "$NVIM" --remote-send "q" && nvim --server "$NVIM" --remote {{dir}})]=],
         },
       },
     },
